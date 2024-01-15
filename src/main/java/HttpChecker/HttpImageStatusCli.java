@@ -10,7 +10,12 @@ public class HttpImageStatusCli {
             System.out.println("Enter HTTP status code");
             if (scanner.hasNextInt()) {
                 int code = scanner.nextInt();
-                HttpStatusImageDownloader.downloadStatusImage(code);
+                try {
+                    HttpStatusImageDownloader.downloadStatusImage(code);
+                    System.out.println("Image downloaded successfully for HTTP-status " + code);
+                } catch (HttpException e) {
+                    System.out.println("Error: " + e.getMessage());
+                }
             } else {
                 System.out.println("Please enter a valid number");
             }

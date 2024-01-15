@@ -10,8 +10,7 @@ public class HttpStatusChecker {
     private static final HttpClient CLIENT = HttpClient.newHttpClient();
     private static final String URL =  "https://http.cat";
 
-    public static String getStatusImage(int code) {
-        StringBuilder response = new StringBuilder();
+    public static String getStatusImage(int code) throws HttpException {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(URL + "/" + code + ".jpg"))
@@ -21,16 +20,13 @@ public class HttpStatusChecker {
 
             int codeResponse = result.statusCode();
             if (codeResponse != 200) {
-                System.out.println("There is no image for HTTP-status " + code);
-            } else {
-                response.append(result.uri());
-                System.out.println("Image URL for HTTP-status " + code + ": " + response);
+                throw new HttpException("There is no image for HTTP status " + code);
             }
 
-        } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
+            return result.uri().toString();
+        } catch (IOException | InterruptedException e) {
+            throw new HttpException("Error fetching status image for HTTP status " + code, e);
         }
-        return response.toString();
     }
 }
 
